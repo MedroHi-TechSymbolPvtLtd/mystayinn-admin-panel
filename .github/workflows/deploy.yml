@@ -1,0 +1,75 @@
+name: Deploy Admin Panel (Safe)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Code checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 2. Node setup
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3. Install deps
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Build
+      - name: Build Project
+        run: npm run build
+
+     
+      - name: Archive build
+        run: |
+          tar -czf build.tar.gz dist
+
+      # 6. Upload to EC2
+      - name: Copy build to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "build.tar.gz"
+          target: "/home/ec2-user/"
+
+      # 7. Safe deploy on EC2
+      - name: Deploy on server (SAFE)
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            set -e  #  error आए → तुरंत stop
+
+            echo " Extracting build..."
+            cd /home/ec2-user
+            rm -rf temp-deploy
+            mkdir temp-deploy
+            tar -xzf build.tar.gz -C temp-deploy
+
+            echo " Backup current build..."
+            sudo rm -rf /usr/share/nginx/html/admin-panel-backup
+            sudo cp -r /usr/share/nginx/html/admin-panel /usr/share/nginx/html/admin-panel-backup || true
+
+            echo " Deploy new build..."
+            sudo rm -rf /usr/share/nginx/html/admin-panel
+            sudo mkdir -p /usr/share/nginx/html/admin-panel
+            sudo cp -r temp-deploy/dist/* /usr/share/nginx/html/admin-panel/
+
+            echo " Restart nginx..."
+            sudo nginx -t
+            sudo systemctl restart nginx
+
+            echo " Deployment SUCCESS"
