@@ -18,7 +18,7 @@ export default function Dashboard() {
             <div className="w-auto space-y-6">
 
               <h2 className="text-lg font-semibold text-gray-900">
-                Overviews
+                Overview
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
