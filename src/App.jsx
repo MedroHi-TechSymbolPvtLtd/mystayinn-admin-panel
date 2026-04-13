@@ -1,11 +1,8 @@
-import React from 'react'
-import Dashboard from './components/Dashboard.jsx'
-const App = () => {
-  return (
-  
-      <Dashboard />
-    
-  )
-}
+import React from "react";
+import AdminLayout from "./components/AdminLayout.jsx";
 
-export default App
+const App = () => {
+  return <AdminLayout />;
+};
+
+export default App;
