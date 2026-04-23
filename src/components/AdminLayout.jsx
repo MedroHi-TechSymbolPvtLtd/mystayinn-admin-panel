@@ -5,6 +5,8 @@ import Dashboard from "./Dashboard";
 import AppStatistics from "./AppStatistics";
 import PromotionsConsole from "./PromotionsConsole";
 import SubscriptionsAccess from "./SubscriptionsAccess";
+import LoginPage from "./LoginPage.jsx";
+import { useAdminSession } from "../context/AdminSessionContext.jsx";
 
 const titles = {
   overview: { section: "Dashboards", page: "Overview" },
@@ -14,13 +16,33 @@ const titles = {
 };
 
 export default function AdminLayout() {
+  const { isAuthenticated, loading, admin, logout } = useAdminSession();
   const [active, setActive] = useState("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const nav = titles[active] || titles.overview;
 
+  if (!isAuthenticated) {
+    if (loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-white text-slate-600 text-sm">
+          Loading…
+        </div>
+      );
+    }
+    return <LoginPage />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <LeftSidebar active={active} onNavigate={(id) => { setActive(id); setMobileNavOpen(false); }} />
+      <LeftSidebar
+        active={active}
+        admin={admin}
+        onLogout={logout}
+        onNavigate={(id) => {
+          setActive(id);
+          setMobileNavOpen(false);
+        }}
+      />
 
       {/* Mobile top bar */}
       <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 lg:hidden">

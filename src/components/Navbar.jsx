@@ -1,6 +1,9 @@
 import { Bell, Moon, Sun, Star, PanelLeftDashed, History } from "lucide-react";
+import { useAdminSession } from "../context/AdminSessionContext.jsx";
 
 export default function Navbar({ section = "Dashboards", page = "Default" }) {
+  const { admin } = useAdminSession();
+
   return (
     <div className="h-[56px] bg-white flex items-center justify-between px-6 border-b border-gray-100">
       <div className="flex items-center gap-4 text-[13px] text-gray-400">
@@ -34,6 +37,9 @@ export default function Navbar({ section = "Dashboards", page = "Default" }) {
             </span>
           </div>
         </div>
+        <span className="hidden sm:inline text-[12px] text-gray-500 max-w-[140px] truncate" title={admin?.email || ""}>
+          {admin?.name || ""}
+        </span>
         <Sun size={16} strokeWidth={2.2} />
         <History size={16} strokeWidth={2.2} />
         <Bell size={16} strokeWidth={2.2} />

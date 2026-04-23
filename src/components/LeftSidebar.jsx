@@ -1,4 +1,4 @@
-import { LayoutGrid, BarChart3, Megaphone, ShieldCheck, Sparkles } from "lucide-react";
+import { LayoutGrid, BarChart3, Megaphone, ShieldCheck, Sparkles, LogOut } from "lucide-react";
 
 const NAV = [
   { id: "overview", label: "Overview", icon: LayoutGrid },
@@ -7,16 +7,18 @@ const NAV = [
   { id: "subscriptions", label: "Subscriptions & access", icon: ShieldCheck },
 ];
 
-export default function LeftSidebar({ active, onNavigate }) {
+export default function LeftSidebar({ active, onNavigate, admin, onLogout }) {
+  const roleLabel = admin?.role ? String(admin.role).replace(/_/g, " ") : "Admin";
+
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-56 flex-col border-r border-gray-200 bg-white lg:flex">
       <div className="flex h-14 items-center gap-2 border-b border-gray-100 px-5">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
           <Sparkles size={16} strokeWidth={2.2} />
         </div>
-        <div>
-          <p className="text-[13px] font-semibold text-gray-900">MyStayInn</p>
-          <p className="text-[10px] text-gray-400">Super admin</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold text-gray-900 truncate">{admin?.name || "MyStayInn"}</p>
+          <p className="text-[10px] text-gray-400 capitalize truncate">{roleLabel}</p>
         </div>
       </div>
 
@@ -42,9 +44,17 @@ export default function LeftSidebar({ active, onNavigate }) {
         })}
       </nav>
 
-      <div className="border-t border-gray-100 p-4">
+      <div className="border-t border-gray-100 p-4 space-y-3">
+        <button
+          type="button"
+          onClick={onLogout}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+        >
+          <LogOut size={14} />
+          Sign out
+        </button>
         <p className="text-[11px] leading-relaxed text-gray-400">
-          Analytics & messaging UI only — connect APIs when ready.
+          Dashboard data loads from <span className="text-gray-600">admin-panel-service</span> (port 3009 by default).
         </p>
       </div>
     </aside>

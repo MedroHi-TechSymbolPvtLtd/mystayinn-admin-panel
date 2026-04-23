@@ -1,7 +1,8 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
 
-export default function StatsCard({ colour, title, value, growth }) {
-  const isNegative = growth.startsWith("-");
+export default function StatsCard({ colour, title, value, growth = "—" }) {
+  const g = growth ?? "—";
+  const isNegative = String(g).startsWith("-");
 
   return (
     <div
@@ -18,7 +19,7 @@ export default function StatsCard({ colour, title, value, growth }) {
             isNegative ? "text-red-500" : "text-green-600"
           }`}
         >
-          {growth}
+          {g}
           {isNegative ?  <TrendingDown size={14} /> : <TrendingUp size={14} /> }
          
         </div>
