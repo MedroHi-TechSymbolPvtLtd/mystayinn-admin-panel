@@ -16,7 +16,7 @@ export default function RightSidebar({ summary }) {
         <div className="space-y-5 text-[13px] text-gray-500">
           <p className="leading-relaxed">
             Notification feed is not exposed on admin-panel-service yet. Use{" "}
-            <span className="font-medium text-gray-700">POST /api/admin/notify</span> from tools or wire FCM here.
+            <span className="font-medium text-gray-700">POST  /notify</span> from tools or wire FCM here.
           </p>
           {["Just now", "Earlier"].map((time, i) => (
             <div key={i} className="flex items-start gap-3 opacity-60">
